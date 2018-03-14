@@ -4,35 +4,41 @@ using namespace std;
 const int maxn = 100010;
 int a[maxn];
 int sum[maxn];
+int N, M;
 
-int bSearch(int left, int right,int m) {
+int upper_bound(int L, int R, int x) {
+	int left = L, right = R, mid;
 	while (left < right) {
-		int mid = (left + right) / 2;
-		if (sum[mid] > m) {
+		mid = (left + right) / 2;
+		if (sum[mid] > x)
 			right = mid;
-		} else
+		else
 			left = mid + 1;
 	}
-	return right;
+	return left;
 }
+
 int main() {
-	int n, m;
-	cin >> n >> m;
-	a[0] = 0;
+	cin >> N >> M;
 	sum[0] = 0;
-	int near;
-	for (int i = 1; i <= n; i++) {
+	for (int i = 1; i <= N; i++) {
 		scanf("%d", &a[i]);
-		sum[i] = sum[i - 1] + a[i];
+		sum[i] += a[i];
 	}
-	for (int i = 1; i <= n; i++) {
-		int j = bSearch(i, n + 1, sum[i - 1] + m);
-		if (sum[j - 1] - sum[i - 1] == m) {
-			near = m;
+	int nearS=1000000000;
+	for (int i = 1; i <= N; i++) {
+		int j = upper_bound(i, N + 1, sum[i - 1] + M);
+		if (sum[j - 1] - sum[i - 1] == M) {
+			nearS = M;
 			break;
+		} else if (j <= N && sum[j] - sum[i - 1] < nearS) {
+			nearS = sum[j] - sum[i - 1];
 		}
-		else if (j <= n && sum[j] - sum[i - 1] < near) {
-			near
+	}
+	for (int i = 1; i <= N; i++) {
+		int j = upper_bound(i, N + 1, sum[i - 1] + nearS);
+		if (sum[j - 1] - sum[i - 1] == nearS) {
+			printf("%d-%d\n", i, j - 1);
 		}
 	}
 	return 0;

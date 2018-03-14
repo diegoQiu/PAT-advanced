@@ -1,46 +1,55 @@
 #include<iostream>
-#include<algorithm>	
+#include<vector>
 #include<cstring>
-#include<string>
+#include<algorithm>
 using namespace std;
+const int maxn = 100010;
+int N, K, M, Amin, Amax;
+int Age[maxn];
+
 struct Rich {
 	char name[10];
-	int age;
-	int money;
-}rich[100005];
-bool cmp(Rich a,Rich b){
-	if (a.money != b.money)
-		return a.money > b.money;
+	int age, worth;
+}rich[maxn],valid[maxn];
+
+bool cmp(Rich a, Rich b) {
+	if (a.worth != b.worth)
+		return a.worth > b.worth;
 	else if (a.age != b.age)
 		return a.age < b.age;
 	else
 		return strcmp(a.name,b.name)<0;
 }
+
+
 int main() {
-	int n, m,k, amin, amax;
-	scanf("%d %d", &n, &k);
+	cin >> N >> K;
 	getchar();
-	for (int i = 0; i < n; i++) {
-		scanf("%s", rich[i].name);
-		scanf("%d %d",  &rich[i].age, &rich[i].money);
+	for (int i = 0; i < N; i++) {
+		scanf("%s %d %d", rich[i].name, &rich[i].age,& rich[i].worth);
 	}
-	sort(rich, rich + n, cmp);
-	for (int i = 0; i < k; i++) {
-		int cnt = 0;
-		scanf("%d %d %d", &m, &amin, &amax);
-		printf("Case #%d:\n", i + 1);
-		for (int j = 0; j < n; j++) {
-			if (rich[j].age >= amin && rich[j].age <= amax) {
-				cnt++;
-				if (cnt <= m) {
-					printf("%s ", rich[j].name);
-					printf("%d %d\n", rich[j].age, rich[j].money);
-				}
-				else
+	sort(rich, rich + N, cmp);
+	int num = 0;
+	for (int i = 0; i < maxn; i++) {
+		int age = rich[i].age;
+		if (Age[age] < 100) {
+			Age[age]++;
+			valid[num++] = rich[i];
+		}
+	}
+	for (int i = 1; i <= K; i++) {
+		printf("Case #%d:\n", i);
+		scanf("%d %d %d", &M, &Amin, &Amax);
+		int num = 0;
+		for (int i = 0; i < N; i++) {
+			if (valid[i].age >= Amin && valid[i].age <= Amax) {
+				num++;
+				printf("%s %d %d\n",valid[i].name,valid[i].age, valid[i].worth);
+				if (num == M)
 					break;
 			}
 		}
-		if (cnt == 0)
+		if (num == 0)
 			printf("None\n");
 	}
 	return 0;
